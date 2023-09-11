@@ -11,7 +11,9 @@ struct Node {
 struct LinkedList {
 
 private:
+  // Puntero al primer nodo
   Node *front;
+  // Cantidad de nodos
   unsigned int length;
 
 public:
@@ -57,14 +59,19 @@ public:
     Node *prev = nullptr;
 
     while (index != nullptr && index->value != value) {
+      
       prev = index;
       index = index->next;
+    
+      // If there are duplicates they will be next to each other
+      if (index->next->value == value) {
+        // TODO: remove duplicates
+      }            
     }
 
     // 1) We reached the end and got the nullptr value
-    if (index == nullptr)
-    {
-      return false;  
+    if (index == nullptr) {
+      return false;
     }
 
     // 2) There is only 1 element on the list
@@ -79,7 +86,6 @@ public:
       prev->next = index->next;
       delete index;
     }
-
     this->length--;
     return true;
   }
@@ -95,17 +101,20 @@ public:
     return false;
   }
 
-  int indexOf(int value) {
-    if (isEmpty())
-      return -1;
-
-    return 0;
+  void clear() {
+    while (this->front != nullptr) {
+      Node *i = this->front;
+      this->front = i->next;
+      delete i;
+    }
+    this->length = 0;
   }
 
   bool isEmpty() const { return this->length == 0; }
 
   string toString() {
-
+    if (isEmpty())
+      return " * La lista esta vacia";
     string result;
     Node *i = this->front;
 
@@ -120,6 +129,7 @@ public:
     }
     return result;
   }
+
 };
 
 /*
@@ -143,11 +153,12 @@ void makeInsert(LinkedList *list) {
   cout << " * El valor " << value << " ha sido insertado a la lista." << endl;
 }
 
-void makeRemove(LinkedList* list) {
+void makeRemove(LinkedList *list) {
   cout << "Ingrese el valor a eliminar: ";
   int value = readInt();
   if (list->remove(value)) {
-    cout << " * El valor " << value << " ha sido eliminado de la lista." << endl;
+    cout << " * El valor " << value << " ha sido eliminado de la lista."
+         << endl;
   } else {
     cout << " * El valor " << value << " no se encuentra en la lista." << endl;
   }
@@ -162,6 +173,11 @@ void checkIfContains(LinkedList *list) {
     cout << " * El valor " << value << " no se encuentra en la lista." << endl;
   }
 }
+void clearList(LinkedList *list) {
+  if (list->isEmpty()) return;
+  list->clear();
+  cout << " * La lista ha sido limpiada. " << endl;
+}
 void run() {
   auto *list = new LinkedList();
   while (true) {
@@ -170,7 +186,9 @@ void run() {
          << "   0) - Para salir del programa.\n"
          << "   1) - Para ingresar un elemento a la lista (insert).\n"
          << "   2) - Para eliminar un elemento de la lista (remove).\n"
-         << "   3) - Para verificar si un elemento existe (contains).\n "
+         << "   3) - Para verificar si un elemento existe (contains).\n"
+         << "   4) - Para mostrar los elementos de la lista (toString).\n"
+         << "   5) - Para limpiar la lista (clear).\n"
          << "Ingrese su opción: ";
 
     int option = readInt();
@@ -190,11 +208,16 @@ void run() {
     case 3:
       checkIfContains(list);
       break;
+    case 4:
+      break;
+    case 5:
+      clearList(list);
+      break;
     default:
       cout << "La opcion " << option << " no existe\n.";
     }
-
     cout << list->toString() << endl;
+    cout << endl;
   }
   delete list;
 }
