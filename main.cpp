@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 
 using namespace std;
 
@@ -24,7 +25,9 @@ public:
     newNode->value = value;
     newNode->next = nullptr;
 
+    // Nodo que recorre la lista
     Node *index = this->front;
+    // Nodo previo al `index`
     Node *prev = nullptr;
 
     while (index != nullptr && index->value < value) {
@@ -45,10 +48,53 @@ public:
     this->length++;
   }
 
-  void remove(int value) {
-    
-    
+  bool remove(int value) {
+    if (isEmpty()) {
+      return false;
+    }
+
+    Node *index = this->front;
+    Node *prev = nullptr;
+
+    while (index != nullptr && index->value != value) {
+      prev = index;
+      index = index->next;
+    }
+
+    // 1) We reached the end and got the nullptr value
+    if (index == nullptr)
+    {
+      return false;  
+    }
+
+    // 2) There is only 1 element on the list
+    if (prev == nullptr) {
+      this->front = this->front->next;
+      // Index has a reference to the front
+      delete index;
+    } else {
+      // 3) Both index and prev have a nonnull ptr
+      // Thus, we know the value was found.
+      // In this case index = value to delete.
+      prev->next = index->next;
+      delete index;
+    }
+
+    this->length--;
+    return true;
   }
+
+  bool contains(int val) {
+    Node *i = this->front;
+    while (i != nullptr && i->value <= val) {
+      if (i->value == val) {
+        return true;
+      }
+      i = i->next;
+    }
+    return false;
+  }
+
   int indexOf(int value) {
     if (isEmpty())
       return -1;
@@ -97,13 +143,34 @@ void makeInsert(LinkedList *list) {
   cout << " * El valor " << value << " ha sido insertado a la lista." << endl;
 }
 
+void makeRemove(LinkedList* list) {
+  cout << "Ingrese el valor a eliminar: ";
+  int value = readInt();
+  if (list->remove(value)) {
+    cout << " * El valor " << value << " ha sido eliminado de la lista." << endl;
+  } else {
+    cout << " * El valor " << value << " no se encuentra en la lista." << endl;
+  }
+}
+
+void checkIfContains(LinkedList *list) {
+  cout << "Ingrese el valor a buscar: ";
+  int value = readInt();
+  if (list->contains(value)) {
+    cout << " * El valor " << value << " si se encuentra en la lista." << endl;
+  } else {
+    cout << " * El valor " << value << " no se encuentra en la lista." << endl;
+  }
+}
 void run() {
   auto *list = new LinkedList();
   while (true) {
 
     cout << "Presione: \n"
          << "   0) - Para salir del programa.\n"
-         << "   1) - Para ingresar un valor a la lista (insert).\n"
+         << "   1) - Para ingresar un elemento a la lista (insert).\n"
+         << "   2) - Para eliminar un elemento de la lista (remove).\n"
+         << "   3) - Para verificar si un elemento existe (contains).\n "
          << "Ingrese su opción: ";
 
     int option = readInt();
@@ -116,6 +183,12 @@ void run() {
       break;
     case 1:
       makeInsert(list);
+      break;
+    case 2:
+      makeRemove(list);
+      break;
+    case 3:
+      checkIfContains(list);
       break;
     default:
       cout << "La opcion " << option << " no existe\n.";
