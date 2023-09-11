@@ -1,7 +1,19 @@
 #include <iostream>
-#include <memory>
 
 using namespace std;
+
+/*
+ * ENUNCIADO: LinkedList
+ * INTEGRANTES: 1113684 - Clay Manuel Gomera Arias
+ *              1114116 - Jean Carlos Araujo Molina
+ *              1116906 - Gabriel Mejía Acosta
+ *              1114441 - Rafael Eduardo Peralta Pimentel
+ *              1114814 - Hadelin Maria García Cedano
+ *              1114950 - Elian Gabriel Villegas Báez
+ *              1116614 - Luis Daniel de la Cruz García
+ *              1116623 - Aquilenyi Suero de los Santos
+ * FECHA: 11/09/2023 <== Fecha de realización
+ */
 
 struct Node {
   int value;
