@@ -61,46 +61,39 @@ public:
     newNode->next = index;
     this->length++;
   }
-
+  
+  // Elimina un elemento de la lista.
   bool remove(int value) {
     if (isEmpty()) {
+      return false; // La lista está vacía
+    }
+    // `index` recorre la lista.
+    Node *index = this->head;
+    // `prev` siempre es previo al `index`. 
+    Node *prev = nullptr; 
+    while (index != nullptr && index->value != value) {
+      // Muevete al siguiente nodo hasta
+      prev = index;
+      index = index->next;
+    }
+    // `index` solo es null si no se encontró el elemento a eliminar.
+    if (index == nullptr) {
       return false;
     }
-  
-    Node *index = this->head;
-    Node *prev = nullptr;
-    bool removed = false;
-
-    // If the index is null it means that either the list is empty
-    // or we traversed the whole list and didn't find the value.
-    while (index != nullptr) {
-
-      if (index->value == value) {
-        // Remove the current node because it matches the value
-        Node *currentNode = index;
-
-        // Move the index to the next node
-        index = index->next;
-
-        // If the previous node is null, its because this is the first node
-        // In that case we can move the front.
-        if (prev == nullptr) {
-          this->head = index;
-        } else {
-          // Otherwise, update the previous node's next pointer
-          prev->next = index;
-        }
-        delete currentNode;
-        this->length--;
-        removed = true;
-      } else {
-        // Otherwise move `prev` and `index` to the next node.
-        prev = index;
-        index = index->next;
-      }
+    // Si `prev` es null significa que el primer nodo contiene el valor que queremos eliminar.
+    if (prev == nullptr) {
+      // Mueve el head al siguiente nodo y elimina el primero.
+      this->head = this->head->next;
+      delete index;
+    } else {
+      // De lo contrario eliminamos el nodo entre `prev` e `index->next`
+      // y hacemos que el nodo previo al eliminado apunte al siguiente.
+      // Ej: [1] -> [2] -> [3], remove(2): [1] -> [3]
+      prev->next = index->next;
+      delete index;
     }
-
-    return removed;
+    this->length--;
+    return true;
   }
 
   bool contains(int val) {
@@ -240,3 +233,45 @@ int main() {
   run();
   return 0;
 }
+
+  // Remove all duplicates.
+  // bool remove(int value) {
+  //   if (isEmpty()) {
+  //     return false;
+  //   }
+  
+  //   Node *index = this->head;
+  //   Node *prev = nullptr;
+  //   bool removed = false;
+
+  //   // If the index is null it means that either the list is empty
+  //   // or we traversed the whole list and didn't find the value.
+  //   while (index != nullptr) {
+
+  //     if (index->value == value) {
+  //       // Remove the current node because it matches the value
+  //       Node *currentNode = index;
+
+  //       // Move the index to the next node
+  //       index = index->next;
+
+  //       // If the previous node is null, its because this is the first node
+  //       // In that case we can move the front.
+  //       if (prev == nullptr) {
+  //         this->head = index;
+  //       } else {
+  //         // Otherwise, update the previous node's next pointer
+  //         prev->next = index;
+  //       }
+  //       delete currentNode;
+  //       this->length--;
+  //       removed = true;
+  //     } else {
+  //       // Otherwise move `prev` and `index` to the next node.
+  //       prev = index;
+  //       index = index->next;
+  //     }
+  //   }
+
+  //   return removed;
+  // }
