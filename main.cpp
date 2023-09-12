@@ -45,19 +45,26 @@ public:
     Node *index = this->head;
     // Nodo previo al `index`
     Node *prev = nullptr;
-
     // 2) Recorrer la lista
     while (index != nullptr && index->value < value) {
+      // Muevete al siguiente nodo
       prev = index;
       index = index->next;
     }
+    // 3) Si `index` tiene el mismo valor que el head
+    // desplazamos el head para colocar el nuevo nodo al principio.
+    // ej: [5]->[8]->[null], insert(2): [2]->[5]->[8]->[null]
     if (this->head == index) {
-      // Solo ocurre cuando la lista esta vacia.
       this->head = newNode;
     } else {
+    // 4) Caso contrario significa hacemos que el elemento previo
+    // a apuntar al nuevo nodo.
       prev->next = newNode;
     }
-
+    // El nuevo nodo apunta a un nodo con un valor mayor o igual.
+    // Por ej, si tengo la lista [1]->[2]->[3] y hago insert(4)
+    // prev->next = newNode hace que [3] apunte a [4].
+    // luego newNode->next hace que [4] apunte a null: [1]->[2]->[3]->[4]->[null]
     newNode->next = index;
     this->length++;
   }
@@ -72,7 +79,7 @@ public:
     // `prev` siempre es previo al `index`. 
     Node *prev = nullptr; 
     while (index != nullptr && index->value != value) {
-      // Muevete al siguiente nodo hasta
+      // Muevete al siguiente nodo
       prev = index;
       index = index->next;
     }
@@ -96,17 +103,18 @@ public:
     return true;
   }
 
-  bool contains(int val) {
+  /// Verifica si la lista contiene al elemento.
+  bool contains(int element) {
     Node *i = this->head;
-    while (i != nullptr && i->value <= val) {
-      if (i->value == val) {
+    while (i != nullptr && i->value <= element) {
+      if (i->value == element) {
         return true;
       }
       i = i->next;
     }
     return false;
   }
-
+  /// Limpia la lista.
   void clear() {
     while (this->head != nullptr) {
       Node *i = this->head;
@@ -117,6 +125,8 @@ public:
   }
 
   bool isEmpty() const { return this->length == 0; }
+
+  int size() const { return this->length;   }
 
   string toString() {
     if (isEmpty())
