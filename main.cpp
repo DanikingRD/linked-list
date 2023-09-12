@@ -24,13 +24,13 @@ struct LinkedList {
 
 private:
   // Puntero al primer nodo
-  Node *front;
+  Node *head;
   // Cantidad de nodos
   unsigned int length;
 
 public:
   LinkedList() {
-    front = nullptr;
+    head = nullptr;
     length = 0;
   }
 
@@ -40,7 +40,7 @@ public:
     newNode->next = nullptr;
 
     // Nodo que recorre la lista
-    Node *index = this->front;
+    Node *index = this->head;
     // Nodo previo al `index`
     Node *prev = nullptr;
 
@@ -52,9 +52,9 @@ public:
     }
     // index points to the node that should be next to [value] (x >= value) in
     // ascending order.
-    if (this->front == index) {
+    if (this->head == index) {
       // This only happens when the list is empty
-      this->front = newNode;
+      this->head = newNode;
     } else {
       prev->next = newNode;
     }
@@ -66,44 +66,45 @@ public:
     if (isEmpty()) {
       return false;
     }
-
-    Node *index = this->front;
+  
+    Node *index = this->head;
     Node *prev = nullptr;
+    bool removed = false;
 
-    while (index != nullptr && index->value != value) {
-      
-      prev = index;
-      index = index->next;
-    
-      // If there are duplicates they will be next to each other
-      if (index->next->value == value) {
-        // TODO: remove duplicates
-      }            
+    // If the index is null it means that either the list is empty
+    // or we traversed the whole list and didn't find the value.
+    while (index != nullptr) {
+
+      if (index->value == value) {
+        // Remove the current node because it matches the value
+        Node *currentNode = index;
+
+        // Move the index to the next node
+        index = index->next;
+
+        // If the previous node is null, its because this is the first node
+        // In that case we can move the front.
+        if (prev == nullptr) {
+          this->head = index;
+        } else {
+          // Otherwise, update the previous node's next pointer
+          prev->next = index;
+        }
+        delete currentNode;
+        this->length--;
+        removed = true;
+      } else {
+        // Otherwise move `prev` and `index` to the next node.
+        prev = index;
+        index = index->next;
+      }
     }
 
-    // 1) We reached the end and got the nullptr value
-    if (index == nullptr) {
-      return false;
-    }
-
-    // 2) There is only 1 element on the list
-    if (prev == nullptr) {
-      this->front = this->front->next;
-      // Index has a reference to the front
-      delete index;
-    } else {
-      // 3) Both index and prev have a nonnull ptr
-      // Thus, we know the value was found.
-      // In this case index = value to delete.
-      prev->next = index->next;
-      delete index;
-    }
-    this->length--;
-    return true;
+    return removed;
   }
 
   bool contains(int val) {
-    Node *i = this->front;
+    Node *i = this->head;
     while (i != nullptr && i->value <= val) {
       if (i->value == val) {
         return true;
@@ -114,9 +115,9 @@ public:
   }
 
   void clear() {
-    while (this->front != nullptr) {
-      Node *i = this->front;
-      this->front = i->next;
+    while (this->head != nullptr) {
+      Node *i = this->head;
+      this->head = i->next;
       delete i;
     }
     this->length = 0;
@@ -128,7 +129,7 @@ public:
     if (isEmpty())
       return " * La lista esta vacia";
     string result;
-    Node *i = this->front;
+    Node *i = this->head;
 
     while (i != nullptr) {
       result += ('[' + to_string(i->value) + ']');
@@ -141,7 +142,6 @@ public:
     }
     return result;
   }
-
 };
 
 /*
@@ -186,7 +186,8 @@ void checkIfContains(LinkedList *list) {
   }
 }
 void clearList(LinkedList *list) {
-  if (list->isEmpty()) return;
+  if (list->isEmpty())
+    return;
   list->clear();
   cout << " * La lista ha sido limpiada. " << endl;
 }
