@@ -23,7 +23,7 @@ struct Node {
 struct LinkedList {
 
 private:
-  // Puntero al primer nodo
+  // Puntero al nodo inicial.
   Node *head;
   // Cantidad de nodos
   unsigned int length;
@@ -34,7 +34,9 @@ public:
     length = 0;
   }
 
+  /// Inserta un elemento a la lista.
   void insert(int value) {
+    // 1) Creamor un nuevo nodo
     Node *newNode = new Node();
     newNode->value = value;
     newNode->next = nullptr;
@@ -44,20 +46,18 @@ public:
     // Nodo previo al `index`
     Node *prev = nullptr;
 
+    // 2) Recorrer la lista
     while (index != nullptr && index->value < value) {
-      // traverse all the nodes until you find one whose value is >= value
-      // passed in
       prev = index;
       index = index->next;
     }
-    // index points to the node that should be next to [value] (x >= value) in
-    // ascending order.
     if (this->head == index) {
-      // This only happens when the list is empty
+      // Solo ocurre cuando la lista esta vacia.
       this->head = newNode;
     } else {
       prev->next = newNode;
     }
+
     newNode->next = index;
     this->length++;
   }
@@ -192,7 +192,7 @@ void clearList(LinkedList *list) {
   cout << " * La lista ha sido limpiada. " << endl;
 }
 void run() {
-  auto *list = new LinkedList();
+  LinkedList *list = new LinkedList();
   while (true) {
 
     cout << "Presione: \n"
