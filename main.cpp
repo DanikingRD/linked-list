@@ -62,7 +62,7 @@ public:
       prev->next = newNode;
     }
     // El nuevo nodo apunta a un nodo con un valor mayor o igual.
-    // Por ej, si tengo la lista [1]->[2]->[3] y hago insert(4)
+    // Por ej, si tengo la lista [1]->[2]->[3]->[null] y hago insert(4)
     // prev->next = newNode hace que [3] apunte a [4].
     // luego newNode->next hace que [4] apunte a null: [1]->[2]->[3]->[4]->[null]
     newNode->next = index;
